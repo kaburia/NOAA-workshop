@@ -17,8 +17,8 @@ def plot_stations_folium(dataframes, colors=None):
     for df, color in zip(dataframes, colors):
         for _, row in df.iterrows():
             folium.Marker(
-                location=[row["lat"], row["lon"]],
-                tooltip=str(row["station"]),   # <--- Pass the tooltip here
+                location=[row["location.latitude"], row["location.longitude"]],
+                tooltip=str(row["code"]),   # <--- Pass the tooltip here
                 icon=folium.Icon(color=color)
             ).add_to(m)
     

@@ -1,24 +1,12 @@
 import ee
 import pandas as pd
-import numpy as np
-import xarray as xr
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-import matplotlib.colors
-import math
 import datetime
-import io
-from tqdm import tqdm
-from datetime import datetime, timedelta
-from IPython.display import HTML, display
-import cartopy.crs as ccrs
-import cartopy.feature as cfeature
-from filter_stations import retreive_data, Filter
-import base64
-import json
-import requests
 from helpers import get_region_geojson
 import datetime
+import ee
+import os
+import rioxarray
+import xarray as xr
 
 def extract_chirps_daily(start_date_str, end_date_str, bbox=None, region_name=None, polygon=None, api_key=''):
     """
@@ -123,3 +111,55 @@ def extract_chirps_daily(start_date_str, end_date_str, bbox=None, region_name=No
     df = pd.DataFrame(results)
     return df
 
+
+
+def download_chirps_pentad_geotiff(start_date, end_date, region, out_dir="chirps_pentad"):
+    """
+    Download CHIRPS Pentad images from GEE as GeoTIFFs for a given region and date range.
+    """
+    os.makedirs(out_dir, exist_ok=True)
+    collection = ee.ImageCollection('UCSB-CHG/CHIRPS/PENTAD') \
+        .filterDate(start_date, end_date) \
+        .select('precipitation')
+    # Get list of images and their dates
+    images = collection.toList(collection.size())
+    n = images.size().getInfo()
+    filepaths = []
+    for i in range(n):
+        img = ee.Image(images.get(i))
+        date_str = img.date().format('YYYYMMdd').getInfo()
+        fname = f"{out_dir}/chirps_pentad_{date_str}.tif"
+        url = img.clip(region).getDownloadURL({
+            'scale': 5000,
+            'region': region.getInfo(),
+            'format': 'GEO_TIFF'
+        })
+        # Download the file
+        import requests
+        r = requests.get(url)
+        with open(fname, 'wb') as f:
+            f.write(r.content)
+        filepaths.append(fname)
+    return filepaths
+
+def load_geotiffs_as_xarray(filepaths):
+    """
+    Load a list of GeoTIFFs as a single xarray.DataArray (stacked along 'time').
+    """
+    arrays = []
+    times = []
+    for fp in filepaths:
+        arr = rioxarray.open_rasterio(fp)
+        arrays.append(arr)
+        # Extract date from filename
+        date_str = fp.split('_')[-1].replace('.tif', '')
+        times.append(date_str)
+    # Stack along new time dimension
+    data = xr.concat(arrays, dim='time')
+    data = data.assign_coords(time=times)
+    return data
+
+# Usage:
+# region = ee.Geometry.Rectangle([minLon, minLat, maxLon, maxLat])
+# filepaths = download_chirps_pentad_geotiff("2025-04-01", "2025-05-31", region)
+# xr_data = load_geotiffs_as_xarray(filepaths)
