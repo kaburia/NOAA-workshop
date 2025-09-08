@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 from IPython.display import HTML
 import xarray as xr
-from helpers import get_region_geojson
+from utils.helpers import get_region_geojson
 from IPython.display import display
 
 
@@ -129,13 +129,15 @@ def plot_data(data_dict: dict, fig_title: str, plot_size: float = 5, robust: boo
 
 # Method to plot the data
 def plot_xarray_data(xarray_ds, fig_title, column="total_rainfall",
-              plot_size=7, robust=True, bbox=None, region_name=None, maps_key=''):
+              plot_size=7, robust=True, bbox=None, region_name=None, maps_key='',
+              polygon=None):
 
-  if bbox is None:
-    geojson = get_region_geojson(region_name, maps_key)
-    polygon = geojson['geometry']['coordinates'][0]
-  else:
-    polygon = None
+  if polygon is None:
+    if bbox is None:
+        geojson = get_region_geojson(region_name, maps_key)
+        polygon = geojson['geometry']['coordinates'][0]
+    else:
+        polygon = None
   # Plot the data
   selected_data = select(xarray_ds, column, level=None, max_steps=None)
   scaled_data, norm, cmap = scale(selected_data, robust=robust)

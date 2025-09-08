@@ -1,7 +1,7 @@
 import ee
 import pandas as pd
 import datetime
-from helpers import get_region_geojson
+from utils.helpers import get_region_geojson
 import datetime
 import ee
 import os
@@ -159,7 +159,78 @@ def load_geotiffs_as_xarray(filepaths):
     data = data.assign_coords(time=times)
     return data
 
-# Usage:
-# region = ee.Geometry.Rectangle([minLon, minLat, maxLon, maxLat])
-# filepaths = download_chirps_pentad_geotiff("2025-04-01", "2025-05-31", region)
-# xr_data = load_geotiffs_as_xarray(filepaths)
+import ee
+import geemap
+import xarray as xr
+import rioxarray
+import os
+import glob
+import pandas as pd
+
+# ee.Initialize(project='leafy-computing-310902')  # <-- change project if needed
+
+def get_chirps_pentad_gee(start_date, end_date, region=None, export_path="chirps_pentad.nc"):
+    """
+    Extract CHIRPS pentad rainfall data from Google Earth Engine as an xarray.Dataset.
+
+    Parameters
+    ----------
+    start_date : str (YYYY-MM-DD)
+        Start date for extraction.
+    end_date : str (YYYY-MM-DD)
+        End date for extraction.
+    region : ee.Geometry, optional
+        Region of interest (polygon). If None, loads global dataset.
+    export_path : str
+        Path to save the NetCDF file.
+
+    Returns
+    -------
+    xarray.Dataset
+        Dataset with variable 'precipitation' and dimensions (time, y, x).
+    """
+    # Load CHIRPS pentad dataset (mm/5-days)
+    chirps = (
+        ee.ImageCollection("UCSB-CHG/CHIRPS/PENTAD")
+        .filterDate(start_date, end_date)
+        .select("precipitation")
+    )
+
+    if region:
+        chirps = chirps.map(lambda img: img.clip(region))
+
+    # Export ImageCollection → GeoTIFF stack
+    export_dir = "chirps_temp"
+    os.makedirs(export_dir, exist_ok=True)
+
+    geemap.ee_export_image_collection(
+        chirps,
+        out_dir=export_dir,
+        scale=5500,  # ~5.5 km resolution
+        file_per_band=False,
+    )
+
+    # Collect exported GeoTIFFs
+    tiff_files = glob.glob(os.path.join(export_dir, "*.tif"))
+    tiff_files.sort()  # ensure chronological order
+
+    # Open as xarray dataset
+    ds = xr.open_mfdataset(
+        tiff_files, combine="nested", concat_dim="time", engine="rasterio"
+    )
+
+    # Parse time from filenames (assumes YYYYMMDD.tif naming)
+    dates = [os.path.basename(f).split(".")[0] for f in tiff_files]
+    ds = ds.assign_coords(time=pd.to_datetime(dates, format="%Y%m%d"))
+
+    # Clean dataset: remove band dim, rename variable
+    ds = ds.squeeze("band", drop=True)
+    ds = ds.rename({"band_data": "precipitation"})
+
+    # Add CRS
+    ds.rio.write_crs("EPSG:4326", inplace=True)
+
+    # Save as NetCDF
+    ds.to_netcdf(export_path)
+
+    return ds
