@@ -5,7 +5,7 @@ import pandas as pd
 import io
 import xarray as xr
 
-from helpers import df_to_xarray2
+from utils.helpers import df_to_xarray2
 
 class CBAMClient:
     def __init__(self, config_file):

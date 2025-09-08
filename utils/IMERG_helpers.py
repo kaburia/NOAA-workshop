@@ -28,10 +28,10 @@ def get_imerg_raw(start_date, end_date, region=None, export_path="imerg_raw.nc")
         Units: mm/hr at 30-min intervals.
     """
 
-    # Load IMERG collection
-    imerg = ee.ImageCollection("NASA/GPM_L3/IMERG_V06") \
+    # Load IMERG collection NASA/GPM_L3/IMERG_V07
+    imerg = ee.ImageCollection("NASA/GPM_L3/IMERG_V07") \
         .filterDate(start_date, end_date) \
-        .select("precipitationCal")
+        .select("precipitation")
 
     if region:
         imerg = imerg.map(lambda img: img.clip(region))

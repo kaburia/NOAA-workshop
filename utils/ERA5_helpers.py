@@ -18,7 +18,7 @@ import base64
 import json
 import requests
 import datetime
-from helpers import get_region_geojson, df_to_xarray
+from utils.helpers import get_region_geojson, df_to_xarray
 
 
 
@@ -136,13 +136,21 @@ def extract_era5_daily(start_date_str, end_date_str, bbox=None, polygon=None, er
     return dataframes
 
 # Extract ERA5 data based on the region and the start and end date
-def era5_data_extracts(region_name, start_date, end_date, maps_key, bbox=None, era5_l=True):
-  # Get the geojson region if bbox is None
-  if bbox is None:
-    geojson = get_region_geojson(region_name, maps_key)
-    polygon = geojson['geometry']['coordinates'][0]
-  else:
-    polygon = None
+def era5_data_extracts(start_date, 
+                       end_date, 
+                       maps_key='', 
+                       bbox=None, 
+                       era5_l=True,
+                        region_name='East Africa',
+                        polygon=None
+                       ):
+  if polygon is None:
+    # Get the geojson region if bbox is None
+    if bbox is None:
+        geojson = get_region_geojson(region_name, maps_key)
+        polygon = geojson['geometry']['coordinates'][0]
+    else:
+        polygon = None
 
   # Extract the data
   variable_dataframes_polygon = extract_era5_daily(start_date, end_date, polygon=polygon, bbox=bbox, era5_l=era5_l)

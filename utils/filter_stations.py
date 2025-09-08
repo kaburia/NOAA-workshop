@@ -471,7 +471,7 @@ class RetrieveData:
     def get_measurements(self, station, startDate=None, endDate=None, variables=None,
                      dataset='controlled', aggregate='5min',
                      quality_flags=False, quality_flags_filter=[1],
-                         method='mean'):
+                         method='sum'):
       """
       Retrieve measurements from a station with fine control over time and quality.
 
