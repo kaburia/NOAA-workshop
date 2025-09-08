@@ -37,11 +37,13 @@ httplib2==0.22.0
 idna==3.10
 ipykernel==6.29.5
 ipython==8.34.0
+ipywidgets==8.1.7
 jedi==0.19.2
 Jinja2==3.1.6
 joblib==1.4.2
 jupyter_client==8.6.3
 jupyter_core==5.7.2
+jupyterlab_widgets==3.0.15
 kiwisolver==1.4.8
 MarkupSafe==3.0.2
 matplotlib==3.10.1
@@ -49,6 +51,7 @@ matplotlib-inline==0.1.7
 matplotlib-scalebar==0.9.0
 nest-asyncio==1.6.0
 netCDF4==1.7.2
+networkx==3.4.2
 numpy==2.2.3
 oauthlib==3.2.2
 packaging==24.2
@@ -72,7 +75,6 @@ pyproj==3.7.1
 pyshp==2.3.1
 python-dateutil==2.9.0.post0
 pytz==2025.1
-pywin32==309
 pyzmq==26.2.1
 requests==2.32.3
 requests-oauthlib==2.0.0
@@ -94,7 +96,7 @@ uritemplate==4.1.1
 urllib3==2.3.0
 wcwidth==0.2.13
 wget==3.2
-windows-curses==2.4.1
+widgetsnbextension==4.0.14
 xarray==2025.1.2
 xyzservices==2025.1.0
 zope.interface==7.2
