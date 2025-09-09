@@ -52,7 +52,7 @@ matplotlib-scalebar==0.9.0
 nest-asyncio==1.6.0
 netCDF4==1.7.2
 networkx==3.4.2
-numpy==2.2.3
+numpy
 oauthlib==3.2.2
 packaging==24.2
 pandas==2.2.3
