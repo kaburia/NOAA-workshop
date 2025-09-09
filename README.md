@@ -7,7 +7,7 @@ The primary objective is to equip national meteorological agencies with the skil
 data and validating it against satellite products, enabling identification of network issues and
 building confidence in observational networks.
 
-[Notebook: 01_Ground_QC.ipynb](https://github.com/kaburia/NOAA-workshop/blob/main/01_Ground_QC.ipynb)
+[![Open Notebook: 01_Ground_QC.ipynb In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kaburia/NOAA-workshop/blob/main/01_Ground_QC.ipynb)
 
 ## Focus Area 2 — Next-Gen Precipitation for Trends & Extremes
 **Core Objective**: To compare next-generation precipitation datasets for historical trends,
