@@ -155,6 +155,18 @@ def plot_xarray_data(xarray_ds, fig_title, column="total_rainfall",
 # Set the animation embed limit
 plt.rcParams['animation.embed_limit'] = 100  # 100MB
 
+def get_extent_from_xarray(da):
+    """
+    Compute imshow extent from xarray DataArray with 1D coords 'x' and 'y'.
+    Ensures proper alignment with Cartopy.
+    """
+    x = da['x'].values
+    y = da['y'].values
+    dx = (x[1] - x[0]) / 2
+    dy = (y[1] - y[0]) / 2
+    return [x.min() - dx, x.max() + dx, y.min() - dy, y.max() + dy]
+
+
 def plot_multiple_data(data_dict: dict, fig_title: str, plot_size: float = 5, robust: bool = False,
                        cols: int = 2, bbox: list = None, polygon: list = None):
     """
@@ -246,6 +258,8 @@ def plot_multiple_data(data_dict: dict, fig_title: str, plot_size: float = 5, ro
         max_steps = max(max_steps, time_steps)
         precomputed[title] = [data.isel(time=t, missing_dims="ignore") if time_steps > 1 else data
                               for t in range(time_steps)]
+        
+        extent = get_extent_from_xarray(precomputed[title][0])
 
         im = ax.imshow(
             precomputed[title][0],
