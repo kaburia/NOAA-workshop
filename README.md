@@ -17,8 +17,9 @@ climate monitoring and risk assessment.
 [![Open Notebook: 02_Precip_Trends.ipynb In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kaburia/NOAA-workshop/blob/main/02_Precip_Trends.ipynb#scrollTo=f550c41d)
 
 
-Focus Area 3 — Temperature Quality & Microclimates
-Core Objective: To demonstrate the advantages of high-resolution temperature data in capturing microclimates and computing derived metrics like PET, for better assessment of heat- related risks.
+## Focus Area 3 — Temperature Quality & Microclimates
+**Core Objective**: To demonstrate the advantages of high-resolution temperature data in capturing microclimates and computing derived metrics like PET, for better assessment of heat- related risks.
+
 [![Open Notebook: 02_Precip_Trends.ipynb In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kaburia/NOAA-workshop/blob/main/03_Temperature_Quality_PET.ipynb)
 
 
