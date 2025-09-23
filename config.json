@@ -1,4 +1,11 @@
 {
-    "apiKey": "",
-    "apiSecret": ""
+    "apiKey": "SensorDxKenya",
+    "apiSecret": "6GUXzKi#wvDvZ",
+    "map_api_key": "AIzaSyC1mHwJ_f2Wi8o-zt5N69lW3tgQZPlJTWE",
+    "location_keys": "AIzaSyDNDU9lmoI2HJ2iRntMX23nyWj6ZnfWwf0",
+    "cbam_api_key": "ah3J0edhmrvUGbozePmKzwv18yKvQgA9",
+    "noaa_stations_token": "GPMSNZkvwGMeyAuZuypihmyTVIryASUN",
+    "username": "kaburiaaustin1@tahmo.org",
+    "password": "dZ47!18q@SCuBnd"
+
 }

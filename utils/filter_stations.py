@@ -82,7 +82,7 @@ class RetrieveData:
         else:
             return self.__handleApiError(apiRequest)
 
-    def get_stations_info(self, station=None, multipleStations=[], countrycode=None):
+    def get_stations_info(self, station=None, multipleStations=[], countrycode=None, list_coords=None):
         """
         Retrieves information about weather stations from an API endpoint and returns relevant information based on the parameters passed to it.
 
@@ -91,6 +91,7 @@ class RetrieveData:
         - station (str, optional): Code for a single station to retrieve information for. Defaults to None.
         - multipleStations (list, optional): List of station codes to retrieve information for multiple stations. Defaults to [].
         - countrycode (str, optional): Country code to retrieve information for all stations located in the country. Defaults to None.
+        - list_coords (list, optional): List of coordinates to filter stations within a certain bounding box. Defaults to None.
 
         Returns:
         -----------
@@ -127,6 +128,14 @@ class RetrieveData:
         elif countrycode:
             info = info[info['location.countrycode'] == f'{countrycode.upper()}']
             return info.drop(labels=info['code'][info.code.str.contains('TH')].index, axis=0)
+        elif list_coords:
+            if len(list_coords) != 4:
+                raise ValueError('Pass in a list of 4 coordinates [min_lon, min_lat, max_lon, max_lat]')
+            min_lon, min_lat, max_lon, max_lat = list_coords
+            return info[(info['location.longitude'] >= min_lon) &
+                        (info['location.longitude'] <= max_lon) &
+                        (info['location.latitude'] >= min_lat) &
+                        (info['location.latitude'] <= max_lat)]
         else:
             return info
 
