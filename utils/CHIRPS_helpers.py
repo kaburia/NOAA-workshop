@@ -169,7 +169,7 @@ import pandas as pd
 
 # ee.Initialize(project='leafy-computing-310902')  # <-- change project if needed
 
-def get_chirps_pentad_gee(start_date, end_date, region=None, export_path="chirps_pentad.nc"):
+def get_chirps_pentad_gee(start_date, end_date, region=None, export_path="chirps_pentad.nc", daily_pentad=True):
     """
     Extract CHIRPS pentad rainfall data from Google Earth Engine as an xarray.Dataset.
 
@@ -183,6 +183,8 @@ def get_chirps_pentad_gee(start_date, end_date, region=None, export_path="chirps
         Region of interest (polygon). If None, loads global dataset.
     export_path : str
         Path to save the NetCDF file.
+    daily_pentad : bool
+        True extracts pentad, False extracts daily
 
     Returns
     -------
@@ -190,11 +192,19 @@ def get_chirps_pentad_gee(start_date, end_date, region=None, export_path="chirps
         Dataset with variable 'precipitation' and dimensions (time, y, x).
     """
     # Load CHIRPS pentad dataset (mm/5-days)
-    chirps = (
-        ee.ImageCollection("UCSB-CHG/CHIRPS/PENTAD")
-        .filterDate(start_date, end_date)
-        .select("precipitation")
-    )
+    if daily_pentad: 
+        chirps = (
+            ee.ImageCollection("UCSB-CHG/CHIRPS/PENTAD")
+            .filterDate(start_date, end_date)
+            .select("precipitation")
+        )
+    else:
+        chirps = (
+            ee.ImageCollection("UCSB-CHG/CHIRPS/DAILY")
+            .filterDate(start_date, end_date)
+            .select("precipitation")
+        )
+        
 
     if region:
         chirps = chirps.map(lambda img: img.clip(region))
