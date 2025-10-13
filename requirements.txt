@@ -101,3 +101,4 @@ xarray==2025.1.2
 xyzservices==2025.1.0
 zope.interface==7.2
 rioxarray
+contextily
